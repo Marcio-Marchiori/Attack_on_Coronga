@@ -1,45 +1,80 @@
 ''' This is where the magic happens, here we will initiate the game, run the routines
 and call the classes that were defined elsewhere, like Player and Enemy.'''
-
 import pygame
-import os
-import sys
-from pygame.locals import *
-
-# Initiates pygame and defines the screen size for the game.
+import math
 pygame.init()
-screen_w, screen_h = 800, 600
-screen = pygame.display.set_mode((screen_w,screen_h))
 
+# Determinando o tamanho da tela
+janela_tamanho = pygame.display.set_mode((800,600))
+# Dando o nome a janela
+pygame.display.set_caption("Attack on Coronga")
+# Carrega a imagem de fundo
+img_fundo = pygame.image.load('fundo.png')
+# Carrega imagem do personagem
+img_personagem = pygame.image.load('doctor.png')
+# Carrega imagem projetil
+img_seringa = pygame.image.load('seringa.png')
 
-class Character:
+# FPS do jogo
+relogio = pygame.time.Clock()
 
+# Definindo os status basicos do personagem
+class Personagem:
     def __init__(self):
-        import pygame
-        self.health = 100
+        self.pos_x = 150
+        self.pos_y = 480
+        self.tamanho_x = 64
+        self.tamanho_y = 64
+        self.velocidade = 10
 
 
-class Player(Character):
-
-    def __init__(self):
-        self.sprite = pygame.image.load("/home/marciomarchiori/Documents/Project_CORONGA/Attack_on_Coronga/Personagens/Images/dude.png")
-        self.initial_pos_w = 300
-        self.initial_pos_h = 300
-# Calls for the Player class
-#from Personagens import *
-player_01 = Character()
 
 
-''' This is the core game, the place where it keeps the loop going till it gets
-called off'''
-while True:
-    screen.fill(0)
-    screen.blit(player_01,(initial_pos_w, initial_pos_h)
+#class Seringa:
+#    def __init__(self, x, y, facing):
+#        self.x = x
+#        self.y = y
+#        self.facing = facing
+#        self.vel = 8 * facing
+#    
+#    def draw(janela_tamanho):
+#        pygame.blit(img_seringa, (self.x, self.y))
+
+# Draws background and updates the screen
+def gameWindow():
+    janela_tamanho.blit(img_fundo,(0,0))
+    janela_tamanho.blit(img_personagem, (player.pos_x, player.pos_y))
+    # Atualiza a tela para mostrar a imagem atual
+    pygame.display.update()
+
+# Atribui a variavel player os dados da classe Personagem
+player = Personagem()
+
+seringas =[]
+
+#Loop principal, aqui ele vai escutar os comandos e permanecer o jogo rodando enquanto nao tentar fechar.
+running = True
+while running:
+    relogio.tick(60)
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
     
-    pygame.display.flip() #This line makes the game keep updating
-    for event in pygame.event.get(): # Loop everything in place
-        if event.type == pygame.QUIT: # If X is pressed it ends de program
-            pygame.quit()
-            exit(0)
+    # Escuta as teclas apertadas
+    teclas = pygame.key.get_pressed()
+
+    # Esquerda
+    if teclas[pygame.K_LEFT] and player.pos_x > player.velocidade:
+        player.pos_x -= player.velocidade
+
+    # Direita
+    if teclas[pygame.K_RIGHT]  and player.pos_x < 720:
+        player.pos_x += player.velocidade
+    
+    gameWindow()
+
 
     
+
+
+pygame.quit()
